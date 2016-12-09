@@ -57,6 +57,9 @@ class Extractor
     public function addTemplate($path)
     {
         $this->environment->loadTemplate($path);
+        if ($this->environment->isDebug()) {
+            fprintf(STDERR, $path . PHP_EOL);
+        }
     }
 
     public function addGettextParameter($parameter)
@@ -76,6 +79,10 @@ class Extractor
         $command .= ' ' . $this->environment->getCache() . '/*/*.php';
 
         $error = 0;
+        if ($this->environment->isDebug()) {
+            fprintf(STDERR, $command . PHP_EOL);
+        }
+
         $output = system($command, $error);
         if (0 !== $error) {
             throw new \RuntimeException(sprintf(
@@ -92,6 +99,8 @@ class Extractor
     public function __destruct()
     {
         $filesystem = new Filesystem();
-        $filesystem->remove($this->environment->getCache());
+        if (! $this->environment->isDebug()) {
+            $filesystem->remove($this->environment->getCache());
+        }
     }
 }

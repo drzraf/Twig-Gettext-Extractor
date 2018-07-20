@@ -33,7 +33,7 @@ class Extractor
     protected $parameters;
 
     /**
-     * @var `Symfony\Component\Console\Input\ArgvInput
+     * @var \Symfony\Component\Console\Input\InputInterface
      */
     protected $input;
 

@@ -32,13 +32,18 @@ class Extractor
      */
     protected $parameters;
 
+    /**
+     * @var `Symfony\Component\Console\Input\ArgvInput
+     */
+    protected $input;
+
 
     private $executable;
 
-    public function __construct(\Twig_Environment $environment)
+    public function __construct(\Twig_Environment $environment, $input = null)
     {
         $this->environment = $environment;
-        $this->reset();
+        $this->input = $input;
     }
 
     /**
@@ -57,6 +62,9 @@ class Extractor
     public function addTemplate($path)
     {
         $this->environment->loadTemplate($path);
+        if ($this->environment->isDebug()) {
+            fprintf(STDERR, $path . PHP_EOL);
+        }
     }
 
     public function addGettextParameter($parameter)
@@ -71,11 +79,15 @@ class Extractor
 
     public function extract()
     {
-        $command = $this->executable ?: 'xgettext';
+        $command = $this->executable;
         $command .= ' ' . implode(' ', $this->parameters);
         $command .= ' ' . $this->environment->getCache() . '/*/*.php';
 
         $error = 0;
+        if ($this->environment->isDebug()) {
+            fprintf(STDERR, $command . PHP_EOL);
+        }
+
         $output = system($command, $error);
         if (0 !== $error) {
             throw new \RuntimeException(sprintf(
@@ -85,13 +97,13 @@ class Extractor
                 $output
             ));
         }
-
-        $this->reset();
     }
 
     public function __destruct()
     {
         $filesystem = new Filesystem();
-        $filesystem->remove($this->environment->getCache());
+        if (! $this->environment->isDebug()) {
+            $filesystem->remove($this->environment->getCache());
+        }
     }
 }

@@ -32,18 +32,12 @@ class Extractor
      */
     protected $parameters;
 
-    /**
-     * @var \Symfony\Component\Console\Input\InputInterface
-     */
-    protected $input;
-
 
     private $executable;
 
-    public function __construct(\Twig_Environment $environment, $input = null)
+    public function __construct(\Twig_Environment $environment)
     {
         $this->environment = $environment;
-        $this->input = $input;
     }
 
     /**

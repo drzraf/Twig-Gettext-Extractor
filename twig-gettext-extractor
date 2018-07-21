@@ -91,7 +91,7 @@ if ($input->getOption('filters')) {
 }
 
 // Twig Environment is up => initialize extractor
-$extractor = new Twig\Gettext\Extractor($twig, $input);
+$extractor = new Twig\Gettext\Extractor($twig);
 $extractor->setGettextParameters($input->getArgument('gettext_parameters'));
 $extractor->setExecutable($input->getOption('exec'));
 
